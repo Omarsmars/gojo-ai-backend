@@ -13,7 +13,10 @@ const client = new OpenAI({
     baseURL: "https://openrouter.ai/api/v1",
     apiKey: process.env.OPENROUTER_API_KEY
 });
-
+console.log(
+    "OPENROUTER_API_KEY loaded:",
+    Boolean(process.env.OPENROUTER_API_KEY)
+);
 app.get("/", (req, res) => {
     res.json({
         name: "GOJO AI",
