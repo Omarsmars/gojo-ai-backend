@@ -1,4 +1,3 @@
-
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
@@ -88,9 +87,9 @@ app.post("/api/ai", async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
     console.log(
-        "GOJO AI backend running on http://localhost:" + PORT
+        "GOJO AI backend running on port " + PORT
     );
 });
 
