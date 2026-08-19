@@ -1,4 +1,4 @@
-```js
+
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
@@ -93,4 +93,4 @@ app.listen(PORT, () => {
         "GOJO AI backend running on http://localhost:" + PORT
     );
 });
-```
+
