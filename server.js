@@ -1,7 +1,7 @@
+```js
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import OpenAI from "openai";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,14 +9,11 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-const client = new OpenAI({
-    baseURL: "https://openrouter.ai/api/v1",
-    apiKey: process.env.OPENROUTER_API_KEY
-});
 console.log(
     "OPENROUTER_API_KEY loaded:",
     Boolean(process.env.OPENROUTER_API_KEY)
 );
+
 app.get("/", (req, res) => {
     res.json({
         name: "GOJO AI",
@@ -51,23 +48,42 @@ would be more useful.
 Keep the response organized and practical.
 `;
 
-        const response = await client.chat.completions.create({
-            model: "openrouter/free",
-            messages: [
-                {
-                    role: "user",
-                    content: prompt
-                }
-            ]
-        });
+        const response = await fetch(
+            "https://openrouter.ai/api/v1/chat/completions",
+            {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    model: "openrouter/free",
+                    messages: [
+                        {
+                            role: "user",
+                            content: prompt
+                        }
+                    ]
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error("OpenRouter error:", data);
+            throw new Error(
+                data?.error?.message || "OpenRouter request failed"
+            );
+        }
 
         res.json({
             success: true,
-            answer: response.choices[0].message.content
+            answer: data.choices?.[0]?.message?.content || "No answer received."
         });
 
     } catch (error) {
-        console.error(error);
+        console.error("GOJO AI error:", error);
 
         res.status(500).json({
             success: false,
@@ -79,3 +95,4 @@ Keep the response organized and practical.
 app.listen(PORT, () => {
     console.log(`GOJO AI backend running on http://localhost:${PORT}`);
 });
+```
