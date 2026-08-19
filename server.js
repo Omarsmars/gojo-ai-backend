@@ -32,28 +32,22 @@ app.post("/api/ai", async (req, res) => {
             });
         }
 
-        const prompt = `
-You are GOJO AI, a friendly study assistant.
-
-Mode: ${mode}
-
-Student request:
-${message}
-
-Help the student learn.
-Explain clearly and simply.
-Do not just give answers to homework when teaching
-would be more useful.
-
-Keep the response organized and practical.
-`;
+        const prompt =
+            "You are GOJO AI, a friendly study assistant.\n\n" +
+            "Mode: " + mode + "\n\n" +
+            "Student request:\n" + message + "\n\n" +
+            "Help the student learn.\n" +
+            "Explain clearly and simply.\n" +
+            "Do not just give answers to homework when teaching " +
+            "would be more useful.\n\n" +
+            "Keep the response organized and practical.";
 
         const response = await fetch(
             "https://openrouter.ai/api/v1/chat/completions",
             {
                 method: "POST",
                 headers: {
-                    "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                    "Authorization": "Bearer " + process.env.OPENROUTER_API_KEY,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
@@ -79,7 +73,9 @@ Keep the response organized and practical.
 
         res.json({
             success: true,
-            answer: data.choices?.[0]?.message?.content || "No answer received."
+            answer:
+                data.choices?.[0]?.message?.content ||
+                "No answer received."
         });
 
     } catch (error) {
@@ -93,6 +89,8 @@ Keep the response organized and practical.
 });
 
 app.listen(PORT, () => {
-    console.log(`GOJO AI backend running on http://localhost:${PORT}`);
+    console.log(
+        "GOJO AI backend running on http://localhost:" + PORT
+    );
 });
 ```
