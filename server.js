@@ -31,29 +31,33 @@ app.post("/api/ai", async (req, res) => {
             });
         }
 
+        const apiKey = process.env.OPENROUTER_API_KEY;
+
+        console.log(
+            "API key check:",
+            Boolean(apiKey),
+            "length:",
+            apiKey ? apiKey.length : 0
+        );
+
         const prompt =
             "You are GOJO AI, a friendly study assistant.\n\n" +
             "Mode: " + mode + "\n\n" +
             "Student request:\n" + message + "\n\n" +
             "Help the student learn.\n" +
             "Explain clearly and simply.\n" +
-            "Do not just give answers to homework when teaching " +
-            "would be more useful.\n\n" +
             "Keep the response organized and practical.";
-console.log(
-    "Auth header ready:",
-    Boolean(process.env.OPENROUTER_API_KEY),
-    "Key length:",
-    process.env.OPENROUTER_API_KEY?.length || 0
-);
+
+        const headers = new Headers();
+
+        headers.set("Authorization", "Bearer " + apiKey);
+        headers.set("Content-Type", "application/json");
+
         const response = await fetch(
             "https://openrouter.ai/api/v1/chat/completions",
             {
                 method: "POST",
-                headers: {
-                    "Authorization": "Bearer " + process.env.OPENROUTER_API_KEY,
-                    "Content-Type": "application/json"
-                },
+                headers: headers,
                 body: JSON.stringify({
                     model: "openrouter/free",
                     messages: [
@@ -67,6 +71,8 @@ console.log(
         );
 
         const data = await response.json();
+
+        console.log("OpenRouter status:", response.status);
 
         if (!response.ok) {
             console.error("OpenRouter error:", data);
@@ -93,8 +99,6 @@ console.log(
 });
 
 app.listen(PORT, "0.0.0.0", () => {
-    console.log(
-        "GOJO AI backend running on port " + PORT
-    );
+    console.log("GOJO AI backend running on port " + PORT);
 });
 
