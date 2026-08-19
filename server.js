@@ -40,7 +40,12 @@ app.post("/api/ai", async (req, res) => {
             "Do not just give answers to homework when teaching " +
             "would be more useful.\n\n" +
             "Keep the response organized and practical.";
-
+console.log(
+    "Auth header ready:",
+    Boolean(process.env.OPENROUTER_API_KEY),
+    "Key length:",
+    process.env.OPENROUTER_API_KEY?.length || 0
+);
         const response = await fetch(
             "https://openrouter.ai/api/v1/chat/completions",
             {
